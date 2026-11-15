@@ -1,0 +1,1 @@
+# SigmaOS-tools-omawrite\n\nSigmaOS omawrite - Writing and text editor\n
