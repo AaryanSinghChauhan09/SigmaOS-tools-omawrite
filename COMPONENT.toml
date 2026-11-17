@@ -3,7 +3,7 @@ name = "SigmaOS-tools-omawrite"
 tier = 2
 stability = "scaffold"
 language = "rust"
-description = "tools-omawrite component"
+description = "SigmaOS Tools omawrite - Writing and text editor (omacom/omawrite parity)"
 upstream = []
 
 [contract]
