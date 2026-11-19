@@ -1,3 +1,4 @@
+#![forbid(unsafe_code)]
 //! omawrite - Writing and text processing tool for SigmaOS
 
 #[derive(Debug, Clone, PartialEq)]
@@ -117,5 +118,52 @@ impl Document {
             .iter()
             .filter(|p| p.text.to_lowercase().contains(&q))
             .collect()
+    }
+}
+
+
+#[cfg(test)]
+mod oma_write_tests {
+    use super::*;
+
+    #[test]
+    fn test_quote_and_code_markdown_aaa() {
+        // Arrange
+        let p_quote = Paragraph::new(0, "A great quote", ParagraphStyle::Quote);
+        let p_code = Paragraph::new(1, "let x = 42;", ParagraphStyle::Code);
+        // Act
+        let md_quote = p_quote.to_markdown();
+        let md_code = p_code.to_markdown();
+        // Assert
+        assert_eq!(md_quote, "> A great quote");
+        assert!(md_code.starts_with("```
+let x = 42;"));
+    }
+
+    #[test]
+    fn test_remove_paragraph_aaa() {
+        // Arrange
+        let mut doc = Document::new("Doc");
+        let id = doc.add_paragraph("Temporary text", ParagraphStyle::Normal);
+        assert_eq!(doc.paragraph_count(), 1);
+        // Act
+        let removed = doc.remove_paragraph(id).unwrap();
+        // Assert
+        assert_eq!(removed.text, "Temporary text");
+        assert_eq!(doc.paragraph_count(), 0);
+        assert!(doc.remove_paragraph(999).is_err());
+    }
+
+    #[test]
+    fn test_search_paragraphs_aaa() {
+        // Arrange
+        let mut doc = Document::new("Notes");
+        doc.add_paragraph("Rust programming language", ParagraphStyle::Normal);
+        doc.add_paragraph("Python scripting", ParagraphStyle::Normal);
+        doc.add_paragraph("Systems architecture in Rust", ParagraphStyle::Heading2);
+        // Act
+        let matches = doc.search("rust");
+        // Assert
+        assert_eq!(matches.len(), 2);
     }
 }
