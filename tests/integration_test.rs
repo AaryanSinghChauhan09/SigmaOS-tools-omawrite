@@ -1,36 +1,33 @@
-use sigmaos_tools_omawrite::{Document, ParagraphStyle};
+//! Integration tests for sigmaos-tools-omawrite.
+
+use sigmaos_tools_omawrite::*;
 
 #[test]
-fn test_add_paragraph_aaa() {
-    // Arrange
-    let mut doc = Document::new("My Doc");
-    // Act
-    let id = doc.add_paragraph("Hello world", ParagraphStyle::Normal);
-    // Assert
-    assert_eq!(doc.paragraph_count(), 1);
-    assert_eq!(doc.get_paragraph(id).unwrap().text, "Hello world");
+fn test_roundtrip() {
+    let md = "# Title\n\nPara **bold** text.\n\n- a\n- b\n\n1. one\n2. two\n\n```rust\nfn x() {}\n```\n";
+    let doc = Document::from_markdown(md);
+    let out = doc.to_markdown();
+    assert!(out.contains("# Title"));
+    assert!(out.contains("- a"));
+    assert!(out.contains("1. one"));
+    assert!(out.contains("```rust"));
 }
 
 #[test]
-fn test_word_count_aaa() {
-    // Arrange
-    let mut doc = Document::new("Test");
-    doc.add_paragraph("one two three", ParagraphStyle::Normal);
-    doc.add_paragraph("four five", ParagraphStyle::Normal);
-    // Act
-    let count = doc.word_count();
-    // Assert
-    assert_eq!(count, 5);
+fn test_editing_ops() {
+    let mut doc = Document::new();
+    doc.blocks[0].text = "hello world".into();
+    doc.split_block(5);
+    assert_eq!(doc.blocks[0].text, "hello");
+    assert_eq!(doc.blocks[1].text, " world");
+    doc.merge_with_previous();
+    assert_eq!(doc.blocks.len(), 1);
 }
 
 #[test]
-fn test_to_markdown_heading_aaa() {
-    // Arrange
-    let mut doc = Document::new("My Document");
-    doc.add_paragraph("Introduction", ParagraphStyle::Heading1);
-    // Act
-    let md = doc.to_markdown();
-    // Assert
-    assert!(md.contains("# My Document"));
-    assert!(md.contains("# Introduction"));
+fn test_stats() {
+    let doc = Document::from_markdown("One two three.\n\nFour five.");
+    let s = reading_stats(&doc.plain_text());
+    assert_eq!(s.words, 5);
+    assert_eq!(s.paragraphs, 2);
 }

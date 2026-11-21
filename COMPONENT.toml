@@ -1,16 +1,16 @@
 [component]
 name = "SigmaOS-tools-omawrite"
 tier = 2
-stability = "scaffold"
+stability = "beta"
 language = "rust"
 description = "SigmaOS Tools omawrite - Writing and text editor (omacom/omawrite parity)"
-upstream = []
+upstream = ["https://github.com/omacom/omawrite"]
 
 [contract]
-provides = ["component"]
+provides = ["doc-model", "markdown-io", "writing-stats"]
 depends_on = []
 
 [maturity]
 status = "Implemented"
-test_evidence = "Compiles and passes AAA unit tests"
+test_evidence = "cargo test: 9 tests pass (blocks, split/merge, markdown, stats)"
 next_milestone = "Hardware and runtime integration"
