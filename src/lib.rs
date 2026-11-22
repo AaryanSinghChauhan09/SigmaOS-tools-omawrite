@@ -13,6 +13,7 @@
 
 pub mod document;
 pub mod error;
+pub mod export;
 pub mod markdown;
 pub mod stats;
 
@@ -20,3 +21,4 @@ pub use document::{Block, BlockKind, Document};
 pub use error::OmawriteError;
 pub use markdown::{parse_document, render_markdown};
 pub use stats::{ReadingStats, reading_stats};
+pub use export::{render_fragment, render_html, write_html};
